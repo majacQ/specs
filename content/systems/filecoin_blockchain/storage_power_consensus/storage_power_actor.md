@@ -16,7 +16,7 @@ dashboardTests: 0
 
 {{<embed src="https://github.com/filecoin-project/specs-actors/blob/master/actors/builtin/power/power_actor.go" lang="go" symbol="Exports">}}
 
-{{<embed src="https://github.com/filecoin-project/specs-actors/blob/master/actors/builtin/power/power_actor.go" lang="go" symbol="MinerConstructorParams">}}
+{{<embed src="https://github.com/filecoin-project/specs-actors/blob/master/actors/builtin/power/power_actor.go" lang="go" symbol="Constructor">}}
 
 ## The Power Table
 
@@ -36,7 +36,7 @@ The Miner lifecycle in the power table should be roughly as follows:
   - Power of a partition is decremented immediately after a missed WindowPoSt (`DetectedFault`).
   - A particular sector's power is decremented when it enters into a faulty state either through Declared Faults or Skipped Faults.
   - A particular sector's power is added back after recovery is declared and proven by PoSt.
-  - A particular sector's power is removed when the sector is expired or terminated through miner invovation.
+  - A particular sector's power is removed when the sector is expired or terminated through miner invocation.
 
 To summarize, only sectors in the Active state will command power. A Sector becomes Active when it is added upon `ProveCommit`. Power is immediately decremented when it enters into the faulty state. Power will be restored when its declared recovery is proven. A sector's power is removed when it is expired or terminated through miner invocation.
 
@@ -45,6 +45,6 @@ To summarize, only sectors in the Active state will command power. A Sector beco
 Pledge Collateral is slashed for any fault affecting storage-power consensus, these include:
 
 - faults to expected consensus in particular (see [Consensus Faults](expected_consensus#consensus-faults)), which will be reported by a slasher to the `StoragePowerActor` in exchange for a reward.
-- faults affecting consensus power more generally, specifically uncommitted power faults (i.e. [Storage Faults](faults#storage-faults)), which will be reported by the `CronActor` automatically or when a miner terminates a sector earlier than its promised duration.
+- faults affecting consensus power more generally, specifically uncommitted power faults (i.e. [Storage Faults](faults)), which will be reported by the `CronActor` automatically or when a miner terminates a sector earlier than its promised duration.
 
 For a more detailed discussion on Pledge Collateral, please see the [Miner Collaterals section](filecoin_mining#miner_collaterals).

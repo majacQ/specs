@@ -356,7 +356,15 @@ while providing security against known attacks (statistical, interpolation, and 
 
 <br/>
 
-{{<plain>}}$\constb R_F, R_P = \texttt{calc\_round\_numbers}(p, M, t, \alpha)${{</plain>}}\
+{{<plain>}}$\constb R_F, R_P = \texttt{calc\_round\_numbers}(p, M, t, c_{\alpha}})${{</plain>}}\
+where the S-box case, {{<plain>}}$c_{\alpha}${{</plain>}}, is given by
+{{<plain>}}
+$c_{\alpha} = \begin{cases}
+    0 & \if \alpha = 3 \cr
+    1 & \if \alpha = 5 \cr
+    2 & \if \alpha = \neg 1
+\end{cases}
+{{</plain>}}\
 The number of full and partial rounds, both are positive integers $R_F, R_P \typecolon \mathbb{Z}_{>0}$ and $R_F$ is even.
 
 $R_F$ and $R_P$ are calculated using either the Python script [`calc_round_numbers.py`](https://extgit.iaik.tugraz.at/krypto/hadeshash/-/blob/9d80ec0473ad7cde5a12f3aac46439ad0da68c0a/code/scripts/calc_round_numbers.py) or the [`neptune`](https://github.com/filecoin-project/neptune) Rust library, denoted {{<plain>}}$\texttt{calc\_round\_numbers}${{</plain>}}. Both methods calculate the round numbers via brute-force; by iterating over all reasonable values for $R_F$ and $R_P$ and choosing the pair that satisfies the security inequalities (provided below) while minimizing the number of S-boxes.
@@ -698,14 +706,10 @@ $\overline{\underline{\Function \textsf{sparse\_factorize}(m \typecolon \Zp^{[t 
     0 & m_{t - 1, 1} & \dots & m_{t - 1, t - 1}
 \end{bmatrix} \\~
 \\
-\line{3} \wb \typecolon \Zp^{[t - 1 {\times} 1]} = \hat{m}_{\ast, 0} = \begin{bmatrix}
-    \hat{m}_{0, 0} \\
+\line{3} \wb \typecolon \Zp^{[t - 1 {\times} 1]} = m_{1 \dotdot, 0} = \begin{bmatrix}
+    m_{1, 0} \\
     \vdots \\
-    \hat{m}_{t - 2, 0}
-\end{bmatrix} = m_{1 \dotdot, 1} = \begin{bmatrix}
-    m_{1, 1} \\
-    \vdots \\
-    m_{t - 1, 1}
+    m_{t - 1, 0}
 \end{bmatrix} \\~
 \\
 \line{4} \hat\wb \typecolon \Zp^{[t - 1 {\times} 1]} = \hat{m}^{\neg 1} {\times} \hso \wb = \begin{bmatrix}
@@ -730,7 +734,7 @@ $\overline{\underline{\Function \textsf{sparse\_factorize}(m \typecolon \Zp^{[t 
 **Algorithm Comments:**\
 **Line 1.** $\hat{m}$ is a submatrix of $m$ which excludes $m$'s first row and first column.\
 **Line 2.** $m'$ is a copy of $m$ where $m$'s first row and first column have been replaced with $[1, 0, \dots, 0]$.\
-**Line 3.** $\wb$ is a column vector which is the first column of $\hat{m}$ or the second column of $m$ excluding the first row's value.\
+**Line 3.** $\wb$ is a column vector whose values are the first column of $m$ excluding $m$'s first row.
 **Line 4.** $\hat\wb$ is the matrix-column vector product of $\hat{m}^{\neg 1}$ and $\wb$.\
 **Line 5.** $m''$ is a sparse matrix whose first row is the first row of $m$, remaining first column is $\hat\wb$, and remaining entries are the identity matrix.
 
